@@ -21,3 +21,7 @@ venv/
 .DS_Store
 .idea/
 .vscode/
+
+# Ajustes locales de Docker Compose
+compose.override.yaml
+compose.override.yml

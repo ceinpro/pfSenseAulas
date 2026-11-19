@@ -1,0 +1,12 @@
+{
+  "center_name": "Mi centro educativo",
+  "pfsense_url": "https://firewall.example.org",
+  "firewall": {
+    "interface": ["lan"],
+    "destination": "!REDES_INTERNAS"
+  },
+  "classrooms": [
+    {"id": 1, "name": "Aula 1", "name_eu": "1. ikasgela", "tracker": null},
+    {"id": 2, "name": "Taller", "name_eu": "Tailerra", "tracker": null}
+  ]
+}

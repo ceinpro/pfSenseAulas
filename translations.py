@@ -131,6 +131,8 @@ def translate(text):
 
 
 def classroom_name(classroom):
+    if language() == 'eu' and classroom.get('name_eu'):
+        return classroom['name_eu']
     name = classroom['name']
     match = re.fullmatch(r'Aula (\d+)', name)
     if match and language() == 'eu':

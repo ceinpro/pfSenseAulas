@@ -1,57 +1,54 @@
-# CEINPRO · Control de Internet
+# Panel de control de Internet por aula
 
-**Versión 1.0.0 · GPL-3.0-only**
+**Versión 1.1.0 · GPL-3.0-only**
 
-Panel interno para permitir o bloquear la salida a Internet por aula mediante reglas de pfSense y pfREST v2.
+Panel para centros educativos que permite o bloquea Internet por aula mediante reglas de pfSense y pfREST v2. Interfaz en castellano y euskera, con contraseña, HTTPS y protección CSRF. Utiliza Python, Flask y Docker Compose.
 
-La interfaz está disponible en **castellano y euskera**, con selector **ES / EU** en el acceso y en la cabecera. La preferencia se recuerda mediante una cookie; si no hay elección, se utiliza el idioma del navegador cuando es compatible.
+## Configuración por centro
 
-La versión actual utiliza Python, Flask y Docker Compose. Muestra tarjetas compactas con el estado del aula y un único botón: **Bloquear** o **Permitir**. Esta versión todavía no incorpora integración con Active Directory ni Razor Pages.
+- Nombre del centro y aulas en **`config/settings.json`**.
+- Aulas configurables: nombre, traducción opcional al euskera, tracker y alias de equipos.
+- URL de pfSense, interfaz y destino de las reglas configurables. Se permiten criterios diferentes por aula, por ejemplo para VLAN distintas.
+- IP y puerto del panel en **`.env`**.
+- Instalación en una ruta genérica, por ejemplo **`/opt/panel-aulas`**.
+- Instalador interactivo sin direcciones ni trackers propios de un centro. Las aulas se crean sin vincular a reglas.
 
-## Puesta en marcha
+Consulta [LEEME.md](LEEME.md) para la instalación completa, configuración de aulas, actualización y migración desde ZIP. [settings.example.json](settings.example.json) muestra la estructura de personalización sin secretos; [.env.example](.env.example) muestra las opciones de red.
 
-Consulta [LEEME.md](LEEME.md) para los requisitos, la configuración inicial y el mantenimiento.
+## Instalación desde GitHub
+
+Con los requisitos del manual instalados, ejecuta como root:
 
 ```bash
+git clone https://github.com/ceinpro/pfSenseAulas.git /opt/panel-aulas
+cd /opt/panel-aulas
 python3 setup.py
 docker compose up -d --build
 ```
 
-El asistente solicita las credenciales de forma interactiva y genera la carpeta privada `config/`. No se incluye en el repositorio.
+El asistente genera la configuración privada. Vincula las aulas con reglas reales desde `config/settings.json`. Por defecto, Docker solo publica el servicio en `127.0.0.1`; elige la IP de administración del servidor en el asistente o en `.env` para acceso remoto.
 
-## Funcionamiento
+## Actualización
 
-- Localiza cada regla mediante su tracker, sin guardar el índice posicional como identificador permanente.
-- Valida el origen, destino, interfaz y tipo antes de cambiar el bloqueo.
-- Aplica los cambios y comprueba la respuesta de pfSense.
-- Mantiene la clave API en el servidor.
-- Incluye contraseña de acceso, protección CSRF y HTTPS.
-
-El proyecto conserva los valores de la instalación de CEINPRO: servidor Docker `192.168.30.174`, pfSense `pfsense.ceinpro.es` y la regla del Aula 9. Para otra instalación hay que adaptar `setup.py`, `compose.yaml` y la validación de reglas de `app.py`.
-
-## Límites actuales
-
-Controla reglas IPv4. No elimina los estados de conexiones existentes. El estado de la tarjeta representa la configuración confirmada del firewall, no una prueba de conectividad desde cada equipo. Solo el Aula 9 viene vinculada a una regla; las demás requieren configuración.
-
-## Publicar el código
-
-Consulta [PUBLICAR.md](PUBLICAR.md). `.gitignore` excluye la configuración privada, certificados con clave privada, entornos Python y archivos temporales.
-
-## Repositorio
-
-https://github.com/ceinpro/pfSenseAulas
-
-## Licencia
-
-Copyright (C) 2026 CEINPRO. Este proyecto se distribuye bajo la **GNU General Public License, versión 3 (GPL-3.0-only)**. Consulta el texto completo en [LICENSE](LICENSE).
-
-## Actualizar una instalación
-
-Actualizar GitHub no actualiza automáticamente el servidor Docker. Si la instalación es un clon de este repositorio, descarga los cambios con `git pull --ff-only`; si se instaló desde un ZIP, sustituye los archivos del código por los de la última versión. Conserva siempre la carpeta privada `config/`. Después ejecuta:
+Conserva **`config/` y `.env`**. No vuelvas a ejecutar el asistente. Revisa cambios locales y crea una copia de seguridad como indica el manual antes de ejecutar:
 
 ```bash
-cd /opt/ceinpro-aulas
-docker compose up -d --build
+cd /opt/panel-aulas
+git pull --ff-only && docker compose up -d --build
+docker compose ps
+docker compose logs --tail=50
 ```
 
-No vuelvas a ejecutar `setup.py` en una instalación configurada. La versión debe aparecer junto al título y el selector **ES / EU**, en la cabecera y en la pantalla de acceso.
+Si actualizas desde la versión 1.0, conserva la carpeta original y crea `.env` con su IP y puerto actuales **antes de actualizar**. Si faltan los criterios de firewall en una configuración antigua, se conservan los de la versión 1.0; añade los valores explícitos siguiendo el manual. No hace falta regenerar claves, contraseñas ni aulas.
+
+## Funcionamiento y límites
+
+El panel identifica cada regla por tracker, valida origen, destino, interfaz y tipo, cambia el bloqueo, aplica y comprueba el resultado. La clave API permanece en el servidor. Solo acepta reglas IPv4 de bloqueo o rechazo previamente creadas; no crea ni reordena reglas. No elimina estados de conexiones abiertas y el estado mostrado no equivale a una prueba de conectividad desde cada equipo.
+
+No incorpora Active Directory. Muestra confirmaciones visuales y no reproduce sonidos.
+
+## Código y licencia
+
+Repositorio: https://github.com/ceinpro/pfSenseAulas. Consulta [PUBLICAR.md](PUBLICAR.md) para publicar una copia del código sin configuración privada. Subir código no despliega el panel en el servidor.
+
+Copyright (C) 2026 CEINPRO. Distribuido bajo la **GNU General Public License, versión 3 (GPL-3.0-only)**. Consulta [LICENSE](LICENSE). La atribución del autor no determina el nombre mostrado por el panel: cada centro lo configura en `center_name`.

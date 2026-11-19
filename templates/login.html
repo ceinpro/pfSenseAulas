@@ -2,8 +2,8 @@
 <!-- Copyright (C) 2026 CEINPRO -->
 <!doctype html>
 <html lang="{{ lang }}">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{ t('Acceso') }} · CEINPRO {{ t('Aulas') }}</title><link rel="stylesheet" href="/static/style.css?v={{ version }}"></head>
-<body class="login-page"><main class="login-card"><div class="brand">CEINPRO<span>{{ t('AULAS') }}</span></div><nav class="languages" aria-label="{{ t('Idioma') }}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{ t('Acceso') }} · {{ center_name }} {{ t('Aulas') }}</title><link rel="stylesheet" href="/static/style.css?v={{ version }}"></head>
+<body class="login-page"><main class="login-card"><div class="brand">{{ center_name }}<span>{{ t('AULAS') }}</span></div><nav class="languages" aria-label="{{ t('Idioma') }}">
   <a href="/language/es" lang="es" aria-label="Castellano" title="Castellano" {% if lang == 'es' %}aria-current="true"{% endif %}>ES</a>
   <a href="/language/eu" lang="eu" aria-label="Euskara" title="Euskara" {% if lang == 'eu' %}aria-current="true"{% endif %}>EU</a>
 </nav><h1>{{ t('Control de Internet') }} <span class="app-version" aria-label="{{ t('Versión') }} {{ version }}">v{{ version }}</span></h1><p>{{ t('Introduce la contraseña del panel.') }}</p><form method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}"><label for="password">{{ t('Contraseña') }}</label><input id="password" name="password" type="password" required autocomplete="current-password" autofocus><button class="primary" type="submit">{{ t('Entrar') }}</button></form>{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}</main></body>

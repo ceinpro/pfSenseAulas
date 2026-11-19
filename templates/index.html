@@ -6,13 +6,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf" content="{{ session.csrf }}">
-  <title>{{ t('Control de Internet') }} · CEINPRO</title>
+  <title>{{ t('Control de Internet') }} · {{ center_name }}</title>
   <link rel="stylesheet" href="/static/style.css?v={{ version }}">
   <script src="/static/app.js?v={{ version }}" defer></script>
 </head>
 <body data-translations='{{ translations | tojson }}'>
   <header class="panel-header">
-    <div class="brand">CEINPRO<span>{{ t('AULAS') }}</span></div>
+    <div class="brand">{{ center_name }}<span>{{ t('AULAS') }}</span></div>
     <h1>{{ t('Control de Internet') }} <span class="app-version" aria-label="{{ t('Versión') }} {{ version }}">v{{ version }}</span></h1>
     <div class="header-actions">
       <nav class="languages" aria-label="{{ t('Idioma') }}">

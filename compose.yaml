@@ -3,7 +3,7 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "192.168.30.174:8445:8443"
+      - "${PANEL_BIND_ADDRESS:-127.0.0.1}:${PANEL_PORT:-8445}:8443"
     volumes:
       - ./config:/config:ro
     read_only: true

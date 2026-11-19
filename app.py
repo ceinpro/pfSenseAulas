@@ -18,6 +18,51 @@ from translations import EU, classroom_name, language, translate as t
 VERSION = (Path(__file__).resolve().parent / 'VERSION').read_text().strip()
 CONFIG_DIR = Path(os.environ.get('CONFIG_DIR', '/config'))
 CONFIG = json.loads((CONFIG_DIR / 'settings.json').read_text())
+
+
+def validate_settings(settings):
+    """Reject ambiguous IDs and incomplete rule bindings before serving requests."""
+    if not isinstance(settings, dict):
+        raise ValueError('settings.json debe contener un objeto JSON.')
+    if 'center_name' in settings and (not isinstance(settings['center_name'], str) or not settings['center_name'].strip()):
+        raise ValueError('center_name debe ser un texto no vacío.')
+    classrooms = settings.get('classrooms')
+    if not isinstance(classrooms, list):
+        raise ValueError('classrooms debe ser una lista.')
+    defaults = settings.get('firewall', {})
+    if not isinstance(defaults, dict):
+        raise ValueError('firewall debe ser un objeto.')
+    identifiers = set()
+    trackers = set()
+    for classroom in classrooms:
+        if not isinstance(classroom, dict):
+            raise ValueError('Cada aula debe ser un objeto.')
+        identifier = classroom.get('id')
+        if type(identifier) is not int or identifier < 1 or identifier in identifiers:
+            raise ValueError('Cada aula necesita un id entero positivo y único.')
+        identifiers.add(identifier)
+        if not isinstance(classroom.get('name'), str) or not classroom['name'].strip():
+            raise ValueError('Cada aula necesita un nombre.')
+        if 'name_eu' in classroom and not isinstance(classroom['name_eu'], str):
+            raise ValueError('name_eu debe ser un texto.')
+        tracker = classroom.get('tracker')
+        if tracker is not None:
+            if not isinstance(tracker, str) or not tracker.strip() or tracker in trackers:
+                raise ValueError('El tracker debe ser una cadena no vacía y única, o null.')
+            trackers.add(tracker)
+            if not isinstance(classroom.get('source'), str) or not classroom['source'].strip():
+                raise ValueError('Las aulas vinculadas necesitan source.')
+    for rule_settings in [defaults] + classrooms:
+        if 'interface' in rule_settings:
+            interfaces = rule_settings['interface']
+            if (not isinstance(interfaces, list) or not interfaces
+                    or any(not isinstance(value, str) or not value.strip() for value in interfaces)):
+                raise ValueError('interface debe ser una lista de identificadores de pfSense.')
+        if 'destination' in rule_settings and (not isinstance(rule_settings['destination'], str) or not rule_settings['destination'].strip()):
+            raise ValueError('destination debe ser un texto no vacío.')
+
+
+validate_settings(CONFIG)
 API_KEY = (CONFIG_DIR / 'api-key').read_text().strip()
 app = Flask(__name__)
 app.secret_key = (CONFIG_DIR / 'session-key').read_text().strip()
@@ -56,13 +101,15 @@ def firewall(method, path, body=None):
 
 
 def find_rule(rules, classroom):
+    # Missing criteria retain the exact v1.0 policy for existing installations.
+    # The generic installer always writes explicit criteria in settings.json.
     matches = [r for r in rules if str(r.get('tracker')) == str(classroom['tracker'])]
     if len(matches) != 1:
         raise FirewallError('No se encuentra una única regla para esta aula.')
     rule = matches[0]
-    if (rule.get('source') != classroom['source'] or rule.get('interface') != ['lan']
+    if (rule.get('source') != classroom['source'] or rule.get('interface') != classroom.get('interface', CONFIG.get('firewall', {}).get('interface', ['lan']))
             or rule.get('type') not in ('block', 'reject')
-            or rule.get('destination') != '!Sare_pribatuak'
+            or rule.get('destination') != classroom.get('destination', CONFIG.get('firewall', {}).get('destination', '!Sare_pribatuak'))
             or rule.get('ipprotocol') != 'inet'
             or type(rule.get('disabled')) is not bool):
         raise FirewallError('La regla del aula ha cambiado. Revisa origen, destino, interfaz y tipo en pfSense.')
@@ -203,6 +250,7 @@ def change(classroom_id):
 @app.context_processor
 def localization():
     return dict(t=t, lang=language(), version=VERSION, classroom_name=classroom_name,
+                center_name=CONFIG.get('center_name') or 'Centro educativo',
                 translations=EU if language() == 'eu' else {})
 
 

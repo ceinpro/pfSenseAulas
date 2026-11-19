@@ -2,13 +2,13 @@
 
 ## Opción gráfica con Visual Studio Code
 
-1. Extrae el paquete y abre la carpeta `ceinpro-aulas` con **Archivo → Abrir carpeta**.
+1. Extrae el paquete y abre la carpeta `panel-aulas` con **Archivo → Abrir carpeta**.
 2. En **Control de código fuente**, pulsa **Inicializar repositorio** si todavía no está inicializado.
 3. Revisa los cambios: deben aparecer los archivos del código y la documentación, pero no `config/`, claves privadas ni archivos `.env`.
 4. Escribe `Panel inicial de control de Internet por aula` y crea el primer commit. Si pide preparar los archivos, acepta después de revisar la lista.
 5. Pulsa **Publicar rama / Publish Branch**, inicia sesión en GitHub si lo solicita y elige un repositorio privado llamado `pfSenseAulas`.
 
-Para alojarlo en la organización CEINPRO, crea primero un repositorio vacío desde GitHub seleccionando la organización como propietaria. No añadas README, licencia ni .gitignore en GitHub, porque ya hay archivos locales. En VS Code usa **Git: Add Remote**, nombre `origin`, URL HTTPS del repositorio creado; después **Git: Push**. Necesitas permisos para crear repositorios en la organización.
+Para alojarlo en la organización de tu centro, crea primero un repositorio vacío desde GitHub seleccionando la organización como propietaria. No añadas README, licencia ni .gitignore en GitHub, porque ya hay archivos locales. En VS Code usa **Git: Add Remote**, nombre `origin`, URL HTTPS del repositorio creado; después **Git: Push**. Necesitas permisos para crear repositorios en la organización.
 
 ## Opción terminal
 
@@ -29,7 +29,7 @@ git commit -m "Panel inicial de control de Internet por aula"
 Crea en GitHub un repositorio privado vacío y copia su URL. Para un repositorio de la organización llamado `pfSenseAulas`:
 
 ```bash
-git remote add origin https://github.com/ceinpro/pfSenseAulas.git
+git remote add origin https://github.com/TU_ORGANIZACION/pfSenseAulas.git
 git push -u origin main
 ```
 
