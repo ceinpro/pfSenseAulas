@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-3.0-only; Copyright (C) 2026 CEINPRO */
 const translations = JSON.parse(document.body.dataset.translations || '{}');
 const t = text => translations[text] || text;
 const csrf = document.querySelector('meta[name=csrf]').content;

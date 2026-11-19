@@ -1,8 +1,10 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2026 CEINPRO
 """Textos de interfaz y errores en castellano y euskera."""
 import re
 from flask import request
 
-EU = {'Control de Internet': 'Interneterako sarbidearen kontrola',
+EU = {'Versión': 'Bertsioa', 'Control de Internet': 'Interneterako sarbidearen kontrola',
  'AULAS': 'IKASGELAK',
  'Aulas': 'Ikasgelak',
  'Actualizar': 'Eguneratu',

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2026 CEINPRO
 import functools
 import json
 import logging
@@ -13,6 +15,7 @@ from flask import Flask, jsonify, redirect, render_template, request, session, u
 from werkzeug.security import check_password_hash
 from translations import EU, classroom_name, language, translate as t
 
+VERSION = (Path(__file__).resolve().parent / 'VERSION').read_text().strip()
 CONFIG_DIR = Path(os.environ.get('CONFIG_DIR', '/config'))
 CONFIG = json.loads((CONFIG_DIR / 'settings.json').read_text())
 API_KEY = (CONFIG_DIR / 'api-key').read_text().strip()
@@ -199,7 +202,7 @@ def change(classroom_id):
 
 @app.context_processor
 def localization():
-    return dict(t=t, lang=language(), classroom_name=classroom_name,
+    return dict(t=t, lang=language(), version=VERSION, classroom_name=classroom_name,
                 translations=EU if language() == 'eu' else {})
 
 

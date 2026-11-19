@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: GPL-3.0-only -->
+<!-- Copyright (C) 2026 CEINPRO -->
 <!doctype html>
 <html lang="{{ lang }}">
 <head>
@@ -5,18 +7,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf" content="{{ session.csrf }}">
   <title>{{ t('Control de Internet') }} · CEINPRO</title>
-  <link rel="stylesheet" href="/static/style.css">
-  <script src="/static/app.js" defer></script>
+  <link rel="stylesheet" href="/static/style.css?v={{ version }}">
+  <script src="/static/app.js?v={{ version }}" defer></script>
 </head>
 <body data-translations='{{ translations | tojson }}'>
   <header class="panel-header">
     <div class="brand">CEINPRO<span>{{ t('AULAS') }}</span></div>
-    <h1>{{ t('Control de Internet') }}</h1>
+    <h1>{{ t('Control de Internet') }} <span class="app-version" aria-label="{{ t('Versión') }} {{ version }}">v{{ version }}</span></h1>
     <div class="header-actions">
       <nav class="languages" aria-label="{{ t('Idioma') }}">
-  <a href="/language/es" lang="es" {% if lang == 'es' %}aria-current="true"{% endif %}>ES</a>
-  <span aria-hidden="true">/</span>
-  <a href="/language/eu" lang="eu" {% if lang == 'eu' %}aria-current="true"{% endif %}>EU</a>
+  <a href="/language/es" lang="es" aria-label="Castellano" title="Castellano" {% if lang == 'es' %}aria-current="true"{% endif %}>ES</a>
+  <a href="/language/eu" lang="eu" aria-label="Euskara" title="Euskara" {% if lang == 'eu' %}aria-current="true"{% endif %}>EU</a>
 </nav>
       <button id="refresh" class="quiet" type="button">{{ t('Actualizar') }}</button>
       <form action="/logout" method="post">
