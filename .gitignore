@@ -1,0 +1,23 @@
+# Configuración privada generada en cada instalación
+/config/
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+
+# Python y archivos locales
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.log
+*.zip
+*.bak
+*.backup
+.DS_Store
+.idea/
+.vscode/

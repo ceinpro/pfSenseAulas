@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf" content="{{ session.csrf }}">
+  <title>{{ t('Control de Internet') }} · CEINPRO</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body data-translations='{{ translations | tojson }}'>
+  <header class="panel-header">
+    <div class="brand">CEINPRO<span>{{ t('AULAS') }}</span></div>
+    <h1>{{ t('Control de Internet') }}</h1>
+    <div class="header-actions">
+      <nav class="languages" aria-label="{{ t('Idioma') }}">
+  <a href="/language/es" lang="es" {% if lang == 'es' %}aria-current="true"{% endif %}>ES</a>
+  <span aria-hidden="true">/</span>
+  <a href="/language/eu" lang="eu" {% if lang == 'eu' %}aria-current="true"{% endif %}>EU</a>
+</nav>
+      <button id="refresh" class="quiet" type="button">{{ t('Actualizar') }}</button>
+      <form action="/logout" method="post">
+        <input type="hidden" name="csrf" value="{{ session.csrf }}">
+        <button class="quiet">{{ t('Cerrar sesión') }}</button>
+      </form>
+    </div>
+  </header>
+  <main>
+    <div id="message" class="notice" role="status" aria-live="polite" hidden></div>
+    <section class="grid" aria-label="{{ t('Aulas') }}">
+      {% for c in classrooms %}
+      <article class="card" data-id="{{ c.id }}" data-configured="{{ 'yes' if c.tracker else 'no' }}">
+        <div class="card-top">
+          <h2>{{ classroom_name(c) }}</h2>
+          <span class="status">{{ t('Consultando') if c.tracker else t('Sin configurar') }}</span>
+        </div>
+        {% if c.tracker %}
+        <div class="actions">
+          <button data-action="" type="button" disabled hidden></button>
+        </div>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </section>
+    <footer>{{ t('El estado refleja la regla IPv4 aplicada en pfSense. Las conexiones abiertas pueden seguir activas hasta que caduquen o se eliminen sus estados.') }}</footer>
+  </main>
+</body>
+</html>
